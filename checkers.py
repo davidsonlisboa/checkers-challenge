@@ -20,9 +20,10 @@ class Game:
         self.font = pygame.font.Font(None, 22)
         self.player1 = Player(1)
         self.player2 = Player(2)
+
         self.turn = 0
         self.move = False
-        self.movingDisc = NoneType
+        self.movingDisc = Disc(0,0,0)
 
     def run(self):
         while True:
@@ -38,8 +39,8 @@ class Game:
                 pygame.quit()
 
     def eventHandler(self):
-        a = 1
-        b = 2
+        a = Disc(0,0,0)
+        b = Disc(0,0,0)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 pygame.quit()
@@ -50,24 +51,21 @@ class Game:
                 a = self.player1.checkMouse(event.pos, self.player2.discs)
                 b = self.player2.checkMouse(event.pos, self.player1.discs)
 
-                if (a != NoneType):
+                if (a.x!=0 and a.y!=0):
                     self.movingDisc = a
-                    self.move = True  
-                if (b != NoneType):
+                    self.move = True
+                if (b.x!=0 and b.y!=0):
                     self.movingDisc = b
                     self.move = True
-                else:
-                    self.movingDisc = NoneType
                     
             if (event.type == MOUSEBUTTONUP):
                 self.move = False
-                self.movingDisc = NoneType
+                #self.updateTurn()
 
-            if (event.type == MOUSEMOTION and self.move == True and self.movingDisc != NoneType):
-                try:
-                    self.movingDisc.moveDisc(event.pos)
-                except:
-                    pass
+            if (event.type == MOUSEMOTION and self.move == True):
+                self.movingDisc.moveDisc(event.pos)
+                self.player1.checkMouse(event.pos, self.player2.discs)
+                self.player2.checkMouse(event.pos, self.player1.discs) 
 
             print(event)
 
@@ -80,40 +78,6 @@ class Game:
                 text = self.font.render("Player 2 turn! ", True, (255, 255, 255))
                 self.screen.blit(text, (130,380))
                 self.turn = 0
-
-
-class Player:
-    def __init__(self, number):
-        self.discs = pygame.sprite.Group()
-        if (number == 1):
-            for i in range(12):
-                if (i<4):
-                    disc = Disc('red', 90*i + 28, 20)
-                    self.discs.add(disc)
-                if (i>=4 and i<8):
-                    disc = Disc('red', 90*(i-4) + 74, 70)
-                    self.discs.add(disc)
-                if (i>=8):
-                    disc = Disc('red', 90*(i-8) + 28, 118)
-                    self.discs.add(disc)
-        else:
-            for i in range(12):
-                if (i<4):
-                    disc = Disc('blue', 90*i + 74, 257)
-                    self.discs.add(disc)
-                if (i>=4 and i<8):
-                    disc = Disc('blue', 90*(i-4) + 28, 303)
-                    self.discs.add(disc)
-                if (i>=8):
-                    disc = Disc('blue', 90*(i-8) + 74, 350)
-                    self.discs.add(disc)
-
-    def checkMouse(self, mouse, discs):
-        for i in self.discs:
-            if (i.checkColision(mouse)):
-                    i.moveDisc(mouse)
-                    pygame.sprite.groupcollide(self.discs, discs, False, True)
-                    return i
 
 #starts the game
 if (__name__ == '__main__'):
