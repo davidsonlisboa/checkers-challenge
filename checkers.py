@@ -6,6 +6,7 @@
 #                                          #
 ############################################
 
+from types import NoneType
 import pygame
 from pygame.locals import *
 from disc import *
@@ -16,27 +17,59 @@ class Game:
         pygame.display.set_caption("Checkers")
         self.screen = pygame.display.set_mode((374,400))
         self.background = pygame.image.load('board.png')
-        self.font = pygame.font.Font("freesansbold.ttf", 22)
+        self.font = pygame.font.Font(None, 22)
         self.player1 = Player(1)
         self.player2 = Player(2)
         self.turn = 0
+        self.move = False
+        self.movingDisc = NoneType
 
     def run(self):
         while True:
-            mx, my = pygame.mouse.get_pos()
-            for event in pygame.event.get():
-                if (event.type == pygame.QUIT):
-                    pygame.quit()
-                elif (event.type == KEYDOWN):
-                    if (event.key == K_ESCAPE):
-                        pygame.quit()
-                print(event)
-
+            self.eventHandler()
             self.screen.blit(self.background,(0,0))
             self.player1.discs.draw(self.screen)
             self.player2.discs.draw(self.screen)
             pygame.display.update()
-            self.updateTurn()
+            #self.updateTurn()
+            if (not self.player1.discs):
+                pygame.quit()
+            elif(not self.player2.discs):
+                pygame.quit()
+
+    def eventHandler(self):
+        a = 1
+        b = 2
+        for event in pygame.event.get():
+            if (event.type == pygame.QUIT):
+                pygame.quit()
+            elif (event.type == KEYDOWN):
+                if (event.key == K_ESCAPE):
+                    pygame.quit()
+            if (event.type == MOUSEBUTTONDOWN):
+                a = self.player1.checkMouse(event.pos, self.player2.discs)
+                b = self.player2.checkMouse(event.pos, self.player1.discs)
+
+                if (a != NoneType):
+                    self.movingDisc = a
+                    self.move = True  
+                if (b != NoneType):
+                    self.movingDisc = b
+                    self.move = True
+                else:
+                    self.movingDisc = NoneType
+                    
+            if (event.type == MOUSEBUTTONUP):
+                self.move = False
+                self.movingDisc = NoneType
+
+            if (event.type == MOUSEMOTION and self.move == True and self.movingDisc != NoneType):
+                try:
+                    self.movingDisc.moveDisc(event.pos)
+                except:
+                    pass
+
+            print(event)
 
     def updateTurn(self):
             if (self.turn == 0):
@@ -74,6 +107,13 @@ class Player:
                 if (i>=8):
                     disc = Disc('blue', 90*(i-8) + 74, 350)
                     self.discs.add(disc)
+
+    def checkMouse(self, mouse, discs):
+        for i in self.discs:
+            if (i.checkColision(mouse)):
+                    i.moveDisc(mouse)
+                    pygame.sprite.groupcollide(self.discs, discs, False, True)
+                    return i
 
 #starts the game
 if (__name__ == '__main__'):

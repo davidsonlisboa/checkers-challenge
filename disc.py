@@ -14,11 +14,15 @@ class Disc(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [x,y]
 
-    def position(self):
-        return
+    def checkColision(self, pos):
+        if self.rect.collidepoint(pos):
+            return True
 
-    def moveDisc():
-        return
+    def moveDisc(self, pos):
+        x,y = pos
+        self.x = x
+        self.y = y
+        self.rect.center = [x,y]
 
     #adicionar imagem diferente/numero em cima com draw
     def turnKing(self):
