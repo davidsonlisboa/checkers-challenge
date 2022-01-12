@@ -10,6 +10,7 @@ from types import NoneType
 import pygame
 from pygame.locals import *
 from disc import *
+from player import *
 
 class Game:
     def __init__(self):
@@ -20,23 +21,34 @@ class Game:
         self.font = pygame.font.Font(None, 22)
         self.player1 = Player(1)
         self.player2 = Player(2)
-
-        self.turn = 0
         self.move = False
         self.movingDisc = Disc(0,0,0)
+        self.turn = 1
 
     def run(self):
         while True:
             self.eventHandler()
+            self.updateWindow()
+            pygame.display.flip()
+            if (not self.player1.discs):
+                winner = self.font.render("Player 2 Won!", 1, (255, 255, 255))
+                self.screen.blit(winner, (200, 380))
+                self.updateWindow()
+                pygame.time.wait(3000)
+                pygame.quit()
+            elif(not self.player2.discs):
+                winner = self.font.render("Player 1 Won!", 1, (255, 255, 255))
+                self.screen.blit(winner, (200, 380))    
+                pygame.time.wait(3000)           
+                pygame.quit()
+
+    def updateWindow(self):
+            pygame.draw.rect(self.screen, (0,0,0), [5,300,130,350])
             self.screen.blit(self.background,(0,0))
             self.player1.discs.draw(self.screen)
             self.player2.discs.draw(self.screen)
-            pygame.display.update()
-            #self.updateTurn()
-            if (not self.player1.discs):
-                pygame.quit()
-            elif(not self.player2.discs):
-                pygame.quit()
+            text = self.font.render("Player " + str(self.turn) + " turn!", 1, (255, 255, 255))
+            self.screen.blit(text, (5,380))
 
     def eventHandler(self):
         a = Disc(0,0,0)
@@ -60,7 +72,7 @@ class Game:
                     
             if (event.type == MOUSEBUTTONUP):
                 self.move = False
-                #self.updateTurn()
+                self.updateTurn()
 
             if (event.type == MOUSEMOTION and self.move == True):
                 self.movingDisc.moveDisc(event.pos)
@@ -70,14 +82,10 @@ class Game:
             print(event)
 
     def updateTurn(self):
-            if (self.turn == 0):
-                text = self.font.render("Player 1 turn! ", True, (255, 255, 255))
-                self.screen.blit(text, (130,380))
-                self.turn = 1
+            if (self.turn == 1):
+                self.turn = 2
             else:
-                text = self.font.render("Player 2 turn! ", True, (255, 255, 255))
-                self.screen.blit(text, (130,380))
-                self.turn = 0
+                self.turn = 1
 
 #starts the game
 if (__name__ == '__main__'):

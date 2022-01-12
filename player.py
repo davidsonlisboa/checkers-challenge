@@ -5,7 +5,19 @@ from disc import *
 class Player:
     def __init__(self, number):
         self.discs = pygame.sprite.Group()
-        if (number == 1):
+        self.number = number
+        self.placePieces()
+
+    def checkMouse(self, mouse, discs):
+        for i in self.discs:
+            if (i.checkColision(mouse)):
+                    i.moveDisc(mouse)
+                    pygame.sprite.groupcollide(self.discs, discs, False, True)
+                    return i
+        return Disc(0,0,0)
+
+    def placePieces(self):
+        if (self.number == 1):
             for i in range(12):
                 if (i<4):
                     disc = Disc('red', 90*i + 28, 20)
@@ -27,11 +39,3 @@ class Player:
                 if (i>=8):
                     disc = Disc('blue', 90*(i-8) + 74, 350)
                     self.discs.add(disc)
-
-    def checkMouse(self, mouse, discs):
-        for i in self.discs:
-            if (i.checkColision(mouse)):
-                    i.moveDisc(mouse)
-                    pygame.sprite.groupcollide(self.discs, discs, False, True)
-                    return i
-        return Disc(0,0,0)
