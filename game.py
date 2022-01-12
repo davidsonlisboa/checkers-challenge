@@ -6,7 +6,7 @@
 #                                          #
 ############################################
 
-from types import NoneType
+import sys
 import pygame
 from pygame.locals import *
 from disc import *
@@ -15,6 +15,7 @@ from player import *
 class Game:
     def __init__(self):
         pygame.init()
+        self.running = True
         pygame.display.set_caption("Checkers")
         self.screen = pygame.display.set_mode((374,400))
         self.background = pygame.image.load('board.png')
@@ -26,39 +27,29 @@ class Game:
         self.turn = 1
 
     def run(self):
-        while True:
+        while self.running:
             self.eventHandler()
             self.updateWindow()
-            pygame.display.flip()
-            if (not self.player1.discs):
-                winner = self.font.render("Player 2 Won!", 1, (255, 255, 255))
-                self.screen.blit(winner, (200, 380))
-                self.updateWindow()
-                pygame.time.wait(3000)
-                pygame.quit()
-            elif(not self.player2.discs):
-                winner = self.font.render("Player 1 Won!", 1, (255, 255, 255))
-                self.screen.blit(winner, (200, 380))    
-                pygame.time.wait(3000)           
-                pygame.quit()
+            pygame.display.update()
 
     def updateWindow(self):
-            pygame.draw.rect(self.screen, (0,0,0), [5,300,130,350])
-            self.screen.blit(self.background,(0,0))
-            self.player1.discs.draw(self.screen)
-            self.player2.discs.draw(self.screen)
-            text = self.font.render("Player " + str(self.turn) + " turn!", 1, (255, 255, 255))
-            self.screen.blit(text, (5,380))
+        pygame.draw.rect(self.screen, (0,0,0), [5,300,360,374])
+        self.screen.blit(self.background,(0,0))
+        self.player1.discs.draw(self.screen)
+        self.player2.discs.draw(self.screen)
+        text = self.font.render("Player " + str(self.turn) + " turn!", 1, (255, 255, 255))
+        self.screen.blit(text, (5,380))
+        self.checkEnd()
 
     def eventHandler(self):
         a = Disc(0,0,0)
         b = Disc(0,0,0)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
-                pygame.quit()
+                self.running = False
             elif (event.type == KEYDOWN):
                 if (event.key == K_ESCAPE):
-                    pygame.quit()
+                    self.running = False
             if (event.type == MOUSEBUTTONDOWN):
                 a = self.player1.checkMouse(event.pos, self.player2.discs)
                 b = self.player2.checkMouse(event.pos, self.player1.discs)
@@ -86,6 +77,16 @@ class Game:
                 self.turn = 2
             else:
                 self.turn = 1
+
+    def checkEnd(self):
+        winner = 0
+        if (not self.player1.discs):
+            winner = 2
+        elif(not self.player2.discs):
+            winner = 1
+        if (winner!=0):
+            text = self.font.render("Player " + str(winner) + " Won!", 1, (255, 255, 255))
+            self.screen.blit(text, (200, 380))
 
 #starts the game
 if (__name__ == '__main__'):
