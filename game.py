@@ -12,7 +12,14 @@ from disc import *
 from player import *
 
 class Game:
+    '''
+    Main class that runs the game
+    All the essential variables are contained in this class
+    '''
     def __init__(self):
+        '''
+        Initialize the variables and the sprites that will be displayed
+        '''
         pygame.init()
         self.running = True
         pygame.display.set_caption("Checkers")
@@ -27,12 +34,18 @@ class Game:
         self.turn = 1
 
     def run(self):
+        '''
+        While the game is running, check the current event and update the display
+        '''
         while self.running:
             self.eventHandler()
             self.updateWindow()
             pygame.display.update()
 
     def updateWindow(self):
+        '''
+        Draws the background image, the pieces, the turn, and checks if there is a winner already
+        '''
         pygame.draw.rect(self.screen, (0,0,0), [5,300,360,374])
         self.screen.blit(self.background,(0,0))
         self.player1.discs.draw(self.screen)
@@ -42,6 +55,12 @@ class Game:
         self.checkEnd()
 
     def eventHandler(self):
+        '''
+        All actions the player takes are registered in this method. 
+        Checks if the game must be closed when pressing ESC key or close the window.
+        When the mouse is pressed down, checks if collides with other players pieces
+        If the mouse collided, set the movement flag to True and tracks the position until the mouse is released
+        '''
         a = Disc(0,0,0)
         b = Disc(0,0,0)
         for event in pygame.event.get():
@@ -79,22 +98,30 @@ class Game:
             print(event)
 
     def updateTurn(self):
-            if (self.turn == 1):
-                self.turn = 2
-            else:
-                self.turn = 1
+        '''
+        Changes the turn to the next player
+        '''
+        if (self.turn == 1):
+            self.turn = 2
+        else:
+            self.turn = 1
 
     def checkEnd(self):
+        '''
+        If the game is over (there are no more discs), display the winner on the screen.
+        '''
         winner = 0
         if (not self.player1.discs):
             winner = 2
         elif(not self.player2.discs):
             winner = 1
-        if (winner!=0):
+        if (winner != 0):
             text = self.font.render("Player " + str(winner) + " Won!", 1, (255, 255, 255))
             self.screen.blit(text, (200, 380))
 
-#starts the game
 if (__name__ == '__main__'):
+    '''
+    Checks if the file is running, then creates the game
+    '''
     game = Game()
     game.run()
