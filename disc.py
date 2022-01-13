@@ -6,6 +6,7 @@ class Disc(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
+        self.king = False
         self.color = color
         self.loadIcon()
         self.rect = self.image.get_rect()
@@ -20,6 +21,29 @@ class Disc(pygame.sprite.Sprite):
     def checkColision(self, pos):
         if self.rect.collidepoint(pos):
             return True
+
+    def checkMove(self, pos):
+        x,y = pos
+        if (abs(self.x - x)<21):
+            self.x = x
+            self.y = y
+            self.rect.center = [x,y]
+        if (not self.king):
+            if (self.color == 'red'):
+                if ((self.y - y)<40):
+                    self.x = x
+                    self.y = y
+                    self.rect.center = [x,y]
+            else:
+                if ((y - self.y)<35):
+                    self.x = x
+                    self.y = y
+                    self.rect.center = [x,y]
+        else:
+            if (abs(self.y - y)<40):
+                    self.x = x
+                    self.y = y
+                    self.rect.center = [x,y]
 
     def moveDisc(self, pos):
         x,y = pos
@@ -39,6 +63,7 @@ class Disc(pygame.sprite.Sprite):
         return False
 
     def turnKing(self):
+        self.king = True
         if (self.color == 'red'):
             self.image = pygame.image.load('red_king.png')
         else:

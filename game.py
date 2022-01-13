@@ -6,7 +6,6 @@
 #                                          #
 ############################################
 
-import sys
 import pygame
 from pygame.locals import *
 from disc import *
@@ -24,6 +23,7 @@ class Game:
         self.player2 = Player(2)
         self.move = False
         self.movingDisc = Disc(0,0,0)
+        self.discPos = [0,0]
         self.turn = 1
 
     def run(self):
@@ -47,23 +47,29 @@ class Game:
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 self.running = False
-            elif (event.type == KEYDOWN):
+
+            if (event.type == KEYDOWN):
                 if (event.key == K_ESCAPE):
                     self.running = False
+            
             if (event.type == MOUSEBUTTONDOWN):
                 a = self.player1.checkMouse(event.pos, self.player2.discs)
                 b = self.player2.checkMouse(event.pos, self.player1.discs)
-
+                
                 if (a.x!=0 and a.y!=0):
                     self.movingDisc = a
                     self.move = True
+                    self.discPos = [a.x,a.y]
                 if (b.x!=0 and b.y!=0):
                     self.movingDisc = b
                     self.move = True
+                    self.discPos = [b.x,b.y]
                     
             if (event.type == MOUSEBUTTONUP):
+                if (self.move == True):
+                    self.updateTurn()
                 self.move = False
-                self.updateTurn()
+                self.movingDisc.checkMove(self.discPos)
 
             if (event.type == MOUSEMOTION and self.move == True):
                 self.movingDisc.moveDisc(event.pos)
