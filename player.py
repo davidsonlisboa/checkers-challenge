@@ -12,7 +12,7 @@ class Player:
         self.number = number
         self.placePieces()
 
-    def checkMouse(self, mouse, discs):
+    def mouseClick(self, mouse, discs):
         '''
         Receives the mouse position and a group of discs. Checks if the mouse intercepts a disc.
         If the mouse is intercepting a piece, this piece is later returned to the eventHandler method to keep moving.
@@ -21,11 +21,26 @@ class Player:
         The overlaped disc is deleted from the group.
         '''
         for i in self.discs:
-            if (i.checkColision(mouse)):
+            if (i.checkMouseCollision(mouse)):
                     i.moveDisc(mouse)
-                    pygame.sprite.groupcollide(self.discs, discs, False, True)
                     return i
+
+        for i in discs:
+            if (i.checkMouseCollision(mouse)):
+                    i.moveDisc(mouse)
+                    return i
+
         return Disc(0,0,0)
+
+    def checkPiecesCollision(self, turn, discs):
+        '''
+        
+        '''
+        if (turn==1):
+            pygame.sprite.groupcollide(self.discs, discs, False, True)
+        else:
+            pygame.sprite.groupcollide(self.discs, discs, True, False)
+        
 
     def placePieces(self):
         '''

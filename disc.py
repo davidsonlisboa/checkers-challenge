@@ -28,7 +28,7 @@ class Disc(pygame.sprite.Sprite):
         else:
             self.image = pygame.image.load('blue.png')
 
-    def checkColision(self, pos):
+    def checkMouseCollision(self, pos):
         '''
         Checks if the mouse position is intercepting the rectangle that surrounds the piece.
         '''
@@ -49,17 +49,17 @@ class Disc(pygame.sprite.Sprite):
             self.rect.center = [x,y]
         if (not self.king):
             if (self.color == 'red'):
-                if ((self.y - y)<40):
+                if ((self.y - y)<35 or (self.y - y)>95):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]
             else:
-                if ((y - self.y)<35):
+                if ((y - self.y)<35 or (y - self.y)>95):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]
         else:
-            if (abs(self.y - y)<40):
+            if (abs(self.y - y)<35 or abs(self.y - y)>95):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]
@@ -95,4 +95,3 @@ class Disc(pygame.sprite.Sprite):
             self.image = pygame.image.load('red_king.png')
         else:
             self.image = pygame.image.load('blue_king.png')
-

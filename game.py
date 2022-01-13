@@ -30,7 +30,7 @@ class Game:
         self.player2 = Player(2)
         self.move = False
         self.movingDisc = Disc(0,0,0)
-        self.discPos = [0,0]
+        self.initialPos = [0,0]
         self.turn = 1
 
     def run(self):
@@ -50,8 +50,7 @@ class Game:
         self.screen.blit(self.background,(0,0))
         self.player1.discs.draw(self.screen)
         self.player2.discs.draw(self.screen)
-        text = self.font.render("Player " + str(self.turn) + " turn!", 1, (255, 255, 255))
-        self.screen.blit(text, (5,380))
+        self.drawTurn()
         self.checkEnd()
 
     def eventHandler(self):
@@ -62,7 +61,6 @@ class Game:
         If the mouse collided, set the movement flag to True and tracks the position until the mouse is released
         '''
         a = Disc(0,0,0)
-        b = Disc(0,0,0)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 self.running = False
@@ -72,28 +70,22 @@ class Game:
                     self.running = False
             
             if (event.type == MOUSEBUTTONDOWN):
-                a = self.player1.checkMouse(event.pos, self.player2.discs)
-                b = self.player2.checkMouse(event.pos, self.player1.discs)
-                
+                a = self.player1.mouseClick(event.pos, self.player2.discs)
                 if (a.x!=0 and a.y!=0):
                     self.movingDisc = a
                     self.move = True
-                    self.discPos = [a.x,a.y]
-                if (b.x!=0 and b.y!=0):
-                    self.movingDisc = b
-                    self.move = True
-                    self.discPos = [b.x,b.y]
+                    self.initialPos = [a.x,a.y]
                     
             if (event.type == MOUSEBUTTONUP):
+                self.movingDisc.checkMove(self.initialPos)
+                self.player1.checkPiecesCollision(self.turn, self.player2.discs)
+
                 if (self.move == True):
                     self.updateTurn()
                 self.move = False
-                self.movingDisc.checkMove(self.discPos)
 
             if (event.type == MOUSEMOTION and self.move == True):
                 self.movingDisc.moveDisc(event.pos)
-                self.player1.checkMouse(event.pos, self.player2.discs)
-                self.player2.checkMouse(event.pos, self.player1.discs) 
 
             print(event)
 
@@ -106,6 +98,13 @@ class Game:
         else:
             self.turn = 1
 
+    def drawTurn(self):
+        '''
+        Draws the round on the bottom of the screen.
+        '''
+        text = self.font.render("Player " + str(self.turn) + " turn!", 1, (255, 255, 255))
+        self.screen.blit(text, (5,380))
+
     def checkEnd(self):
         '''
         If the game is over (there are no more discs), display the winner on the screen.
@@ -115,6 +114,7 @@ class Game:
             winner = 2
         elif(not self.player2.discs):
             winner = 1
+
         if (winner != 0):
             text = self.font.render("Player " + str(winner) + " Won!", 1, (255, 255, 255))
             self.screen.blit(text, (200, 380))
