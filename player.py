@@ -17,8 +17,7 @@ class Player:
         Receives the mouse position and a group of discs. Checks if the mouse intercepts a disc.
         If the mouse is intercepting a piece, this piece is later returned to the eventHandler method to keep moving.
         The method returns an empty disc otherwise. 
-        Then moves the disc to the mouse position and check if the moving disc is overlapping any other player discs.
-        The overlaped disc is deleted from the group.
+        Then moves the disc to the current mouse position.
         '''
         for i in self.discs:
             if (i.checkMouseCollision(mouse)):
@@ -34,7 +33,8 @@ class Player:
 
     def checkPiecesCollision(self, turn, discs):
         '''
-        
+        Checks if a disc is overlapping any other player discs.
+        The overlapped disc is deleted from the group.
         '''
         if (turn==1):
             pygame.sprite.groupcollide(self.discs, discs, False, True)

@@ -34,6 +34,8 @@ class Disc(pygame.sprite.Sprite):
         '''
         if self.rect.collidepoint(pos):
             return True
+        else:
+            return False
 
     def checkMove(self, pos):
         '''
