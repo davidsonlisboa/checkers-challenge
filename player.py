@@ -12,7 +12,7 @@ class Player:
         self.number = number
         self.placePieces()
 
-    def mouseClick(self, mouse, discs):
+    def mouseClick(self, mouse, discs, turn):
         '''
         Receives the mouse position and a group of discs. Checks if the mouse intercepts a disc.
         If the mouse is intercepting a piece, this piece is later returned to the eventHandler method to keep moving.
@@ -20,12 +20,12 @@ class Player:
         Then moves the disc to the current mouse position.
         '''
         for i in self.discs:
-            if (i.checkMouseCollision(mouse)):
+            if (i.checkMouseCollision(mouse) and turn==1):
                     i.moveDisc(mouse)
                     return i
 
         for i in discs:
-            if (i.checkMouseCollision(mouse)):
+            if (i.checkMouseCollision(mouse) and turn==2):
                     i.moveDisc(mouse)
                     return i
 

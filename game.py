@@ -70,17 +70,16 @@ class Game:
                     self.running = False
             
             if (event.type == MOUSEBUTTONDOWN):
-                auxDisc = self.player1.mouseClick(event.pos, self.player2.discs)
+                auxDisc = self.player1.mouseClick(event.pos, self.player2.discs, self.turn)
                 if (auxDisc.x!=0 and auxDisc.y!=0):
                     self.movingDisc = auxDisc
                     self.move = True
                     self.initialPos = [auxDisc.x, auxDisc.y]
                     
             if (event.type == MOUSEBUTTONUP):
-                self.movingDisc.checkMove(self.initialPos)
-                self.player1.checkPiecesCollision(self.turn, self.player2.discs)
-
-                if (self.move == True):
+                #self.movingDisc.checkMove(self.initialPos)
+                if (self.move == True and self.movingDisc.checkMove(self.initialPos)):
+                    self.player1.checkPiecesCollision(self.turn, self.player2.discs)
                     self.updateTurn()
                 self.move = False
 
