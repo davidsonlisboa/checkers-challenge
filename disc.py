@@ -52,19 +52,19 @@ class Disc(pygame.sprite.Sprite):
             return False
         if (not self.king):
             if (self.color == 'red'):
-                if ((self.y - y)<30 or (self.y - y)>95):
+                if ((self.y - y)<30 or (self.y - y)>115):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]
                     return False
             else:
-                if ((y - self.y)<30 or (y - self.y)>95):
+                if ((y - self.y)<30 or (y - self.y)>115):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]
                     return False
         else:
-            if (abs(self.y - y)<30 or abs(self.y - y)>95):
+            if (abs(self.y - y)<30 or abs(self.y - y)>115):
                     self.x = x
                     self.y = y
                     self.rect.center = [x,y]

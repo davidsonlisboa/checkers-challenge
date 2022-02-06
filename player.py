@@ -31,16 +31,33 @@ class Player:
 
         return Disc(0,0,0)
 
-    def checkPiecesCollision(self, turn, discs):
+    def checkPiecesCollision(self, turn, discs, pos1, pos2):
         '''
-        Checks if a disc is overlapping any other player discs.
-        The overlapped disc is deleted from the group.
+        Checks if we must delete any other player discs.
+        Calculating the position according to the color.
         '''
+        x = 0
+        y = 0
         if (turn==1):
-            pygame.sprite.groupcollide(self.discs, discs, False, True)
+            if (pos1[0]- pos2[0] > 0):
+                x = pos2[0] + 50
+            else:
+                x = pos2[0] - 50
+            y = pos2[1]-50 
+            for i in discs:
+                if (i.checkMouseCollision([x,y])):
+                    i.kill()
         else:
-            pygame.sprite.groupcollide(self.discs, discs, True, False)
+            if (pos1[0]- pos2[0] > 0):
+                x = pos2[0] + 50
+            else:
+                x = pos2[0] - 50
+            y = pos2[1]+50
+            for i in self.discs:
+                if (i.checkMouseCollision([x,y])):
+                    i.kill()
         
+            
 
     def placePieces(self):
         '''

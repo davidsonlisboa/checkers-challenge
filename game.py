@@ -60,7 +60,6 @@ class Game:
         When the mouse is pressed down, checks if collides with other players pieces
         If the mouse collided, set the movement flag to True and tracks the position until the mouse is released
         '''
-        auxDisc = Disc(0,0,0)
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
                 self.running = False
@@ -70,16 +69,15 @@ class Game:
                     self.running = False
             
             if (event.type == MOUSEBUTTONDOWN):
-                auxDisc = self.player1.mouseClick(event.pos, self.player2.discs, self.turn)
-                if (auxDisc.x!=0 and auxDisc.y!=0):
-                    self.movingDisc = auxDisc
+                self.movingDisc = self.player1.mouseClick(event.pos, self.player2.discs, self.turn)
+                if (self.movingDisc.x!=0 and self.movingDisc.y!=0):
                     self.move = True
-                    self.initialPos = [auxDisc.x, auxDisc.y]
+                    self.initialPos = [self.movingDisc.x, self.movingDisc.y]
                     
             if (event.type == MOUSEBUTTONUP):
                 #self.movingDisc.checkMove(self.initialPos)
                 if (self.move == True and self.movingDisc.checkMove(self.initialPos)):
-                    self.player1.checkPiecesCollision(self.turn, self.player2.discs)
+                    self.player1.checkPiecesCollision(self.turn, self.player2.discs, self.initialPos, self.movingDisc.rect.center)
                     self.updateTurn()
                 self.move = False
 
